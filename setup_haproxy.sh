@@ -81,15 +81,14 @@ frontend  http-in
 
 backend webservers
     balance roundrobin
-    # Poor-man's sticky
-    balance source
-    # JSP SessionID Sticky
-    appsession JSESSIONID len 52 timeout 3h
+    cookie SERVERID insert indirect nocache
     option httpchk
     option forwardfor
     option http-server-close
-    server web1 192.168.1.12:80 maxconn 32 check
-    server web2 192.168.1.13:80 maxconn 32 check
+    #weight for round robin
+    server web1 192.168.1.12:80 check cookie web1 weight 60
+    server web2 192.168.1.13:80 check cookie web2 weight 40
+
 
 listen admin
     bind *:8080
